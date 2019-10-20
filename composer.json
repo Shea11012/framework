@@ -1,0 +1,24 @@
+{
+    "name": "mxy/framework",
+    "description": "The Simple Framework",
+    "type": "project",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "shea",
+            "email": "1872314654@qq.com"
+        }
+    ],
+    "require": {
+        "php": "^7.2",
+        "psr/container": "^1.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "Shea\\": "src/shea"
+        }
+    },
+    "require-dev": {
+        "codeception/codeception": "^3.1"
+    }
+}
