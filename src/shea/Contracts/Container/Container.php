@@ -45,8 +45,7 @@ interface Container extends ContainerInterface
      * resolve the given type from the container
      * @param $abstract
      * @param array $parameters
-     * @param bool $newInstance
      * @return mixed
      */
-    public function make($abstract,array $parameters = [],bool $newInstance = false);
+    public function make($abstract,array $parameters = []);
 }

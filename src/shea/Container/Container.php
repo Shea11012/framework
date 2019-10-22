@@ -82,12 +82,15 @@ class Container implements ContainerContract, \ArrayAccess
      * @param bool $newInstance
      * @return mixed|object
      */
-    public function make($abstract, $parameters = [], bool $newInstance = false)
+    public function make($abstract, $parameters = [])
     {
         // 获取 abstract 的别名，判断是否已经注册过
         $abstract = $this->getAlias($abstract);
 
-        if (isset($this->instances[$abstract]) && !$newInstance) {
+        // 根据参数判断是否需要一个新的实例
+        $newInstance = !empty($parameters);
+
+        if (isset($this->instances[$abstract]) && !$newInstance ) {
             return $this->instances[$abstract];
         }
 
@@ -136,7 +139,7 @@ class Container implements ContainerContract, \ArrayAccess
 
         // 检测类是否可实例化
         if (!$reflector->isInstantiable()) {
-            throw new \ErrorException("$concrete is not instantiable");
+            throw new BindingResolutionException("Target [$concrete] is not instantiable");
         }
 
         // 获取构造函数
@@ -187,7 +190,7 @@ class Container implements ContainerContract, \ArrayAccess
             return $parameter->getDefaultValue();
         }
 
-        throw new \ErrorException("Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}");
+        throw new BindingResolutionException("Unresolvable dependency resolving [$parameter] in class {$parameter->getDeclaringClass()->getName()}");
     }
 
     // 单例
@@ -203,7 +206,7 @@ class Container implements ContainerContract, \ArrayAccess
             return $abstract;
         }
 
-        return $this->aliases[$abstract];
+        return $this->getAlias($this->aliases[$abstract]);
     }
 
     /**
@@ -213,6 +216,9 @@ class Container implements ContainerContract, \ArrayAccess
      */
     public function alias($abstract, $alias)
     {
+        if ($alias === $abstract) {
+            throw new \LogicException("[{$abstract}] is aliased to itself");
+        }
         $this->aliases[$alias] = $abstract;
     }
 
@@ -246,7 +252,7 @@ class Container implements ContainerContract, \ArrayAccess
 
     protected function getClosure($abstract,$concrete)
     {
-        return function ($container,$parameters = []) use ($abstract,$concrete) {
+        return function (Container $container,$parameters = []) use ($abstract,$concrete) {
             if ($abstract == $concrete) {
                 return $container->build($concrete);
             }
@@ -276,7 +282,7 @@ class Container implements ContainerContract, \ArrayAccess
 
     public function bound($abstract)
     {
-        return isset($this->bindings[$abstract]) || isset($this->instances[$abstract]);
+        return isset($this->bindings[$abstract]) || isset($this->instances[$abstract]) || isset($this->aliases[$abstract]);
     }
 
     public function factory($abstract)
