@@ -203,4 +203,15 @@ class Application extends Container implements ApplicationContract, HttpKernelIn
         return $this->basePath . DIRECTORY_SEPARATOR . 'bootstrap' . ($path ? DIRECTORY_SEPARATOR . $path : $path);
     }
 
+    public function registerCoreContainerAliases()
+    {
+        foreach ([
+            'app'   => [\Shea\Foundation\Application::class,\Shea\Contracts\Foundation\Application::class],
+            'router' => [\Shea\Routing\Router::class,\Shea\Contracts\Routing\Registrar::class],
+            // todo
+        ] as $aliases => $alias) {
+
+        }
+    }
+
 }
