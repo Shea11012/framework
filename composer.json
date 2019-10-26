@@ -22,7 +22,8 @@
     "autoload": {
         "psr-4": {
             "Shea\\": "src/shea"
-        }
+        },
+        "files": ["src/shea/helpers.php"]
     },
     "require-dev": {
         "codeception/codeception": "^3.1"

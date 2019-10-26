@@ -26,10 +26,6 @@ class RouteAction
             $action['uses'] = static::findCallable($action);
         }
 
-        if (is_string($action['uses']) && !Str::contains($action['uses'],'@')) {
-            $action['uses'] = static::makeInvokable($action['uses']);
-        }
-
         return $action;
     }
 
@@ -47,18 +43,11 @@ class RouteAction
 
     protected static function findCallable(array $action)
     {
+        // 这边这么写是什么意思,$action 根据 uri 定位到不应该是一个字符串吗，调试的时候打印一下输出
         foreach ($action as $key => $value) {
             if (is_callable($value) && is_numeric($key)) {
                 return $value;
             }
         }
-    }
-
-    protected static function makeInvokable($action)
-    {
-        if (!method_exists($action,'__invoke')) {
-            throw new \UnexpectedValueException("Invalid route action: [{$action}]");
-        }
-        return $action.'@__invoke';
     }
 }
