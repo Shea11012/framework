@@ -99,4 +99,13 @@ class Arr
         return http_build_query($array,null,'&',PHP_QUERY_RFC3986);
     }
 
+    public static function wrap($value)
+    {
+        if (is_null($value)) {
+            return [];
+        }
+
+        return is_array($value) ? $value : [$value];
+    }
+
 }

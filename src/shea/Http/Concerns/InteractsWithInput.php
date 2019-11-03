@@ -20,6 +20,7 @@ trait InteractsWithInput
      */
     protected function retrieveItem($source,$key,$default)
     {
+        // $source 是 Symfony 的 request 调用了 ParameterBag 初始化了这些资源
         if (is_null($key)) {
             return $this->$source->all();
         }
